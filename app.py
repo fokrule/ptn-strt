@@ -1,10 +1,30 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, request, url_for
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
 
 app = Flask(__name__)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:mysql@localhost/py_starter'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
 
 @app.route('/')
 def Index() :
     return render_template('index.html')
+
+
+@app.route('/insert', methods=['POST'])
+def insert():
+    if request.method == "POST":
+        title = request.form['title']
+        post = request.form['post']
+        status = request.form['status']
+
+        sql = text("INSERT INTO posts (title, post, status) VALUES (:title, :post, :status)")
+        db.session.execute(sql, {'title': title, 'post': post, 'status': status})
+        db.session.commit()
+        return redirect(url_for('Index'))
 
 if __name__ == "__main__":
     app.run(debug=True)
