@@ -11,7 +11,24 @@ db = SQLAlchemy(app)
 
 @app.route('/')
 def Index() :
-    return render_template('index.html')
+    age = 19
+    if age < 19:
+        message = "young kid!"
+    elif age >= 19 and age <= 25:
+        message = "Hardworking phase of your life!"
+    else :
+        message = "Well try hard and start getting result"
+
+
+    # Match section
+    match(age):
+        case 18:
+            caseMessage = "This is from case and age is 18"
+        case  _ if age >=19 and age <= 25:
+            caseMessage = "This is from case and age is 19"
+        case _:
+            caseMessage = "Nothing mathced"
+    return render_template('index.html',message = message, caseMessage = caseMessage)
 
 
 @app.route('/insert', methods=['POST'])
